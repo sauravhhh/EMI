@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickEMI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="text-center mb-0"><i class="bi bi-calculator me-2"></i>QuickEMI</h1>
+        </div>
+    </div>
+
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Add New Plan</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="hirePurchaseForm">
+                            <div class="mb-3">
+                                <label for="itemName" class="form-label">Item Name</label>
+                                <input type="text" class="form-control" id="itemName" placeholder="e.g., Laptop, Car, Mobile" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="itemPrice" class="form-label">Purchase Price (₹)</label>
+                                <input type="number" class="form-control" id="itemPrice" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="downPayment" class="form-label">Down Payment (₹)</label>
+                                <input type="number" class="form-control" id="downPayment" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                <input type="number" class="form-control" id="interestRate" placeholder="e.g., 12.5" step="0.1" min="0" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="paymentPeriod" class="form-label">Payment Period (Months)</label>
+                                <select class="form-select" id="paymentPeriod" required>
+                                    <option value="">Select period</option>
+                                    <option value="3">3 Months</option>
+                                    <option value="6">6 Months</option>
+                                    <option value="9">9 Months</option>
+                                    <option value="12">12 Months</option>
+                                    <option value="18">18 Months</option>
+                                    <option value="24">24 Months</option>
+                                    <option value="36">36 Months</option>
+                                    <option value="48">48 Months</option>
+                                    <option value="60">60 Months</option>
+                                </select>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-calculator me-2"></i>Calculate
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div id="summarySection" class="card" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Payment Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="summary-card">
+                            <div class="summary-item">
+                                <span>Item Name:</span>
+                                <span id="summaryItemName">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Purchase Price:</span>
+                                <span id="summaryItemPrice">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Down Payment:</span>
+                                <span id="summaryDownPayment">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Financed Amount:</span>
+                                <span id="summaryFinancedAmount">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Interest Rate:</span>
+                                <span id="summaryInterestRate">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Payment Period:</span>
+                                <span id="summaryPaymentPeriod">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Monthly Payment:</span>
+                                <span id="summaryMonthlyPayment">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total Payment:</span>
+                                <span id="summaryTotalPayment">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total Interest:</span>
+                                <span id="summaryTotalInterest">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button id="savePlanBtn" class="btn btn-success">
+                                <i class="bi bi-save me-2"></i>Save Plan
+                            </button>
+                            <button id="resetBtn" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-table me-2"></i>Payment Schedule</h5>
+                        <span id="scheduleItemCount" class="badge bg-primary">0 items</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="emptyScheduleState" class="empty-state">
+                            <i class="bi bi-calendar-x"></i>
+                            <p>No payment schedule calculated yet.<br>Fill the form and click "Calculate" to generate a schedule.</p>
+                        </div>
+                        
+                        <div id="paymentScheduleContainer" class="payment-schedule" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Payment #</th>
+                                            <th>Payment Date</th>
+                                            <th>Payment Amount</th>
+                                            <th>Principal</th>
+                                            <th>Interest</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentScheduleBody">
+                                        <!-- Payment schedule rows will be inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-folder2-open me-2"></i>Saved Plans</h5>
+                        <span id="planCount" class="badge bg-primary">0 plans</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="emptyPlansState" class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>No saved plans yet.<br>Calculate a payment schedule and save it to see it here.</p>
+                        </div>
+                        
+                        <div id="savedPlansContainer">
+                            <!-- Saved plans will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Made with ❤️ by Sauravhhh
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+                                  </html>
